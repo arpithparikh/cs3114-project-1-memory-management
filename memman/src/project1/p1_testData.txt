@@ -1,0 +1,54 @@
+
+print
+insert 0 4240 7345   Albany  
+insert    1 3455 13836 Albuquerque  
+     insert 2 3511 10150    Amarillo 
+insert 3  6113 14954 Anchorage
+insert 4 3345   8423 Atlanta    
+
+remove 4  
+  print 0
+print   1
+print 2  
+
+print 3
+  print    4 
+print 5
+  insert   5    2515   5740     Asuncion_Paraguay 
+print 5
+insert 6 4447 11750   Baker
+
+
+insert 7 3918   7638 Baltimore
+insert 7 3918   7638 Baltimore
+insert 8 3955   11625 Beijing_China
+insert 9    3330 8650 Birmingham
+print
+remove 9
+  print   9
+insert 9 3355 1822     Cape_Town_South_Africa
+  print 9
+remove 3        
+
+ remove  4
+
+ remove 6
+remove 7
+
+   remove    7
+
+remove 8
+insert   7 2308 8223 Havana_Cuba
+insert   7 2946    10634 Chongqing_China    
+
+insert 8 616 10648   Jakarta_Indonesia
+  print
+
+
+
+
+
+
+
+remove 8 
+
