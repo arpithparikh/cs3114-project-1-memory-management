@@ -2,7 +2,7 @@
  * This class represents a Doubly Linked list.
  *
  * @author Xavier Seymour (xaviers3)
- * @version Apr 29, 2010
+ * @version Sept 2, 2010
  * @param <T>
  *            The type of the object to be stored.
  */
@@ -45,7 +45,7 @@ public class TwoWayLinkedList<T>
             head.setNext( node );
             tail.setPrevious( node );
         }
-        if ( size > 0 && !( current.equals( head ) ) )
+        else if ( size > 0 && !( current.equals( head ) ) )
         {
             // sets next link of the created node to be the current node.
             node.setNext( current );
@@ -127,13 +127,53 @@ public class TwoWayLinkedList<T>
      */
     public void next()
     {
-        if ( !( current.equals( tail ) ) )
-        {
+        //if ( !( current.equals( tail ) ) )
+        //{
             ListNode<T> next = null;
             next = current.getNext();
             current = next;
-        }
+        //}
 
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the head
+     */
+    public ListNode<T> getHead()
+    {
+        return head;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the current
+     */
+    public ListNode<T> getCurrent()
+    {
+        return current;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the tail
+     */
+    public ListNode<T> getTail()
+    {
+        return tail;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the size
+     */
+    public int getSize()
+    {
+        return size;
     }
 
 
@@ -172,16 +212,14 @@ public class TwoWayLinkedList<T>
             ListNode<T> currentNext = null;
             currentNext = current.getNext();
             currentNext.setPrevious( current.getPrevious() );
-        }
-        if ( size > 1 )
-        {
             current = current.getNext();
             size--;
         }
-        else if ( size == 1 )
+
+        if ( size == 0 )
         {
-            current = null;
-            size--;
+            current = head;
+
         }
     }
 
