@@ -19,9 +19,11 @@ public class MemManager
 
     private int                                         poolSize;
 
+    private String                                      caller;
+
 
     // constructor
-    MemManager( int poolSize )
+    public MemManager( int poolSize )
     {
 
         this.poolSize = poolSize;
@@ -35,7 +37,6 @@ public class MemManager
         // Initially adds the entire memory
         freeBlockList.add( freeBlock );
 
-
     }
 
 
@@ -43,10 +44,12 @@ public class MemManager
     // space contains the record to be inserted, of length size.
     public int insert( byte[] space, int size )
     {
+        caller = "insert";
         int position = findMemory( size );
 
-        //If position = -1, then there is no available freeBlock large enough to
-        //Accommodate the space.
+        // If position = -1, then there is no available freeBlock large enough
+        // to
+        // Accommodate the space.
         if ( !( position == -1 ) )
         {
             // insert record at position
@@ -74,20 +77,21 @@ public class MemManager
     {
         // represents the smallest available freeBlock within out freeBlock list
         // that will accommodate the size of the entry.
-        int smallestfreeBlock = poolSize;
+        int smallestFreeBlock = poolSize + 1;
         int position = -1;
         freeBlockList.moveToStart();
         freeBlockList.next();
         while ( !freeBlockList.isAtEnd() )
         {
-            Integer[] keyArray =
-                (Integer[])freeBlockList.getCurrentElement().keySet().toArray();
-            Integer key = keyArray[0];
+            Object[] keyArray =
+                freeBlockList.getCurrentElement().keySet().toArray();
+            Integer key = (Integer)keyArray[0];
 
-            if ( ( freeBlockList.getCurrentElement().get( key ) < smallestfreeBlock )
+            if ( ( freeBlockList.getCurrentElement().get( key ) < smallestFreeBlock )
                 && ( freeBlockList.getCurrentElement().get( key ) >= size ) )
             {
                 position = key;
+                smallestFreeBlock = freeBlockList.getCurrentElement().get( key );
             }
             freeBlockList.next();
         }
@@ -99,29 +103,190 @@ public class MemManager
 
     public void updateFreeBlockList( int position, int size )
     {
+        int key = findBlock( position );
+        // If the inserted data's size takes up the entire freeBlock, remove
+        // that
+        // freeBlock from the freeBlockList. Otherwise, shorten the current
+        // freeBlock
+        // accordingly and update that blocks position and size
+        if ( size == freeBlockList.getCurrentElement().get( key ) )
+        {
+            freeBlockList.removeCurrent();
+        }
+        else
+        {
+            int freeBlockSize = freeBlockList.getCurrentElement().get( key );
+            freeBlockList.getCurrentElement().remove( key );
+            freeBlockList.getCurrentElement().put(
+                position + size,
+                freeBlockSize - size );
+        }
+    }
+
+
+    // Free a block at the position specified by the Handle.
+    // Merge adjacent free blocks.
+    public void remove( int position )
+    {
+        caller = "remove";
+        byte byteSize = memoryPool[position];
+        Integer size = (int)byteSize;
+        // remove the record starting at the given position
+        for ( int i = 0; i < size; i++ )
+        {
+            memoryPool[position + i] = 0;
+        }
+
+        findBlock( position );
+        freeBlock = new HashMap<Integer, Integer>( 1 );
+        freeBlock.put( position, size );
+        freeBlockList.add( freeBlock );
+        Object[] keyArray =
+            freeBlockList.getCurrentElement().keySet().toArray();
+        int key = (Integer)keyArray[0];
+
+        caller = "check";
+        int currentValue = freeBlockList.getCurrentElement().get( key );
+        int mergePoint1 = position + currentValue;
+        int rightKeyMatch = findBlock( mergePoint1 );
+
+        int mergePoint2 = position;
+        int leftKeyMatch = -1;
+        int priorValue = -1;
+        int key2 = -1;
+        if ( 1==1)
+        {
+            findBlock(mergePoint2);
+            freeBlockList.previous();
+            if ( !( freeBlockList.getCurrent().equals( freeBlockList.getHead() ) )
+                && !( freeBlockList.getCurrent().equals( freeBlockList.getTail() ) ) &&
+                !( freeBlockList.getCurrent().equals( null )))
+            {
+                Object[] keyArray2 =
+                    freeBlockList.getCurrentElement().keySet().toArray();
+                key2 = (Integer)keyArray2[0];
+                priorValue = freeBlockList.getCurrentElement().get( key2 );
+                leftKeyMatch = key2 + priorValue;
+            }
+
+        }
+
+        if ( rightKeyMatch == mergePoint1 )
+        {
+            findBlock(mergePoint1);
+            freeBlockList.previous();
+            freeBlockList.removeCurrent();
+            int rightValue =
+                freeBlockList.getCurrentElement().get( rightKeyMatch );
+
+            freeBlockList.getCurrentElement().clear();
+            freeBlockList.getCurrentElement().put(
+                position,
+                currentValue + rightValue );
+            //if()
+        }
+        if(leftKeyMatch == mergePoint2) {
+            findBlock(mergePoint2);
+            freeBlockList.previous();
+            freeBlockList.removeCurrent();
+            int rightValue =
+                freeBlockList.getCurrentElement().get(leftKeyMatch);
+
+            freeBlockList.getCurrentElement().clear();
+            freeBlockList.getCurrentElement().put(
+                key2,
+                priorValue + rightValue );
+        }
+
+    }
+
+
+    // Finds the freeBlock whose and sets the 'current' field of the
+    // freeBlockList to point to the
+    //
+    // ----------------------------------------------------------
+    /**
+     * If the caller of this method is insert, finds the freeBlock whose key
+     * matches the position in question and sets the 'current' field of the
+     * freeBlockList to point to that freeBlock If the caller of this method is
+     * remove, finds the freeBlock whose key is just larger than the position in
+     * question and sets the 'current' field of the freeBlockList to point to
+     * that freeBlock. This will allow freeBlock positions to be ordered
+     * (calling next on the freeBlockList will return the freeBlock whose
+     * position value is just larger than the current freeBlock)
+     *
+     * @param position
+     *            The starting position of the space
+     * @return the key of the current freeBlock
+     */
+    public int findBlock( int position )
+    {
+
         freeBlockList.moveToStart();
         freeBlockList.next();
         Integer key = -1;
         while ( !freeBlockList.isAtEnd() )
         {
-            Integer[] keyArray =
-                (Integer[])freeBlockList.getCurrentElement().keySet().toArray();
-            key = keyArray[0];
-            if(key == position) {
-                break;
+            Object[] keyArray =
+                freeBlockList.getCurrentElement().keySet().toArray();
+            key = (Integer)keyArray[0];
+            if ( caller.equals( "insert" ) || caller.equals( "check" ) )
+            {
+                if ( key == position )
+                {
+                    break;
+                }
+
+            }
+            if ( caller.equals( "remove" ) )
+            {
+                if ( key > position )
+                {
+                    break;
+                }
             }
             freeBlockList.next();
         }
-        //If the inserted data's size takes up the entire freeBlock, remove that
-        //freeBlock from the freeBlockList. Otherwise, shorten the current freeBlock
-        //accordingly and update that blocks position and size
-        if(size == freeBlockList.getCurrentElement().get( key )) {
-            freeBlockList.removeCurrent();
-        }else {
-            int freeBlockSize = freeBlockList.getCurrentElement().get( key );
-            freeBlockList.getCurrentElement().remove( key );
-            freeBlockList.getCurrentElement().put( size, freeBlockSize-size );
-        }
+
+        return key;
+    }
+
+
+    public void merge()
+    {
+
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the memoryPool
+     */
+    public byte[] getMemoryPool()
+    {
+        return memoryPool;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the freeBlockList
+     */
+    public TwoWayLinkedList<HashMap<Integer, Integer>> getFreeBlockList()
+    {
+        return freeBlockList;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the poolSize
+     */
+    public int getPoolSize()
+    {
+
+        return poolSize;
+
     }
 
 }
