@@ -1,4 +1,11 @@
 
+// -------------------------------------------------------------------------
+/**
+ *  Tests the memManager methods
+ *
+ *  @author Xavier Seymour xaviers3
+ *  @version Sep 11, 2011
+ */
 public class memManagerTest
 {
 
