@@ -1,6 +1,13 @@
 import junit.framework.TestCase;
 
 
+// -------------------------------------------------------------------------
+/**
+ *  Tests the TwoWayLinkedList
+ *
+ *  @author Xavier Seymour
+ *  @version Sep 10, 2011
+ */
 public class TwoWayLinkedListTest
     extends TestCase
 {
