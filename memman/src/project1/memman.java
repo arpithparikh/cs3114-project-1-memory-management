@@ -1,10 +1,11 @@
+package project1;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class Memman
+public class memman
 {
 
     public static void main( String[] args )
@@ -178,10 +179,24 @@ public class Memman
                  * positionMap.get( currCommand[1] ); // Let's look // up the //
                  * position //myMemoryManager.print( posHandle ); }
                  */
+            	if(currCommand.length == 1)  // 
+            	{
+            		//Then print all records. 
+            		for(int k =0; k < positionMap.size(); k++)
+            		{
+            			if (positionMap.containsKey(k))
+            			{
+            			//	System.out.println(myMemoryManager.readRecord(positionMap.get(k)).toString());
+            			}
+            		}
+            	} else if (currCommand.length == 2){
+            		// Print specific record
+            	//	System.out.println(myMemoryManager.readRecord(positionMap.get(currCommand[1])).toString());
+            	}
             }
             else
             {
-                // Let's print an error message
+            	//System.err.println( "Invalid command. Command can only be insert, remove or print");
 
             }
 
@@ -220,14 +235,14 @@ public class Memman
         throws IOException
     {
 
-        String dataString = x + y + city; // concatenate all data elements
+        String dataString = x + " " + " " + y + " " + city; // concatenate all data elements
+        System.out.println(dataString);
 
-        // ByteArrayOutputStream b = new ByteArrayOutputStream(); // Create a
-        // byte array output stream object
         byte[] dataByteArray = dataString.getBytes(); // Encode dataString into
-        // byte array
-        // b.write(buffer); // Write bytearray to the output stream
-        // byte[] dataByteArray = b.toByteArray();
+        System.out.println(dataByteArray);
+        String value = new String(dataByteArray);
+        
+        System.out.println(value);
         byte[] recordArray = new byte[dataByteArray.length + 1];
         recordArray[0] = (byte)( getLength( dataByteArray ) + 1 );
 
