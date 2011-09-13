@@ -224,6 +224,11 @@ public class TwoWayLinkedList<T>
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Returns true if the list is at the start
+     * @return True or false
+     */
     public boolean isAtStart()
     {
         return current == head;
@@ -231,7 +236,10 @@ public class TwoWayLinkedList<T>
 
 
     // ----------------------------------------------------------
-
+    /**
+     * Returns true if the list is at the end
+     * @return True of false
+     */
     public boolean isAtEnd()
     {
         return current == tail;
