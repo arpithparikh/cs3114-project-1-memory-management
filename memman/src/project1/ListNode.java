@@ -38,6 +38,7 @@ public class ListNode<T>
         setElement(element);
         setNext(node);
 
+
     }
 
     //~ Public methods ........................................................
