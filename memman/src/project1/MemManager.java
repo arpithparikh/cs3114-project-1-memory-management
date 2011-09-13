@@ -1,3 +1,4 @@
+package project1;
 import java.util.HashMap;
 
 
@@ -233,7 +234,23 @@ public class MemManager
 
     }
 
-
+    /** 
+     * 
+     * Reads a Record given the position handle
+     * 
+     */
+    public byte[] readRecord(int positionHandle)
+    {
+    	int size = (int)memoryPool[positionHandle];
+    	byte[] data = new byte[300];
+    	for (int i = 1; i < size; i++)
+    	{
+    		data[i] = memoryPool[positionHandle+i];
+    	}
+    	return data;
+    }
+    
+    
     /**
      * If the caller of this method is insert, finds the freeBlock whose key
      * matches the position in question and sets the 'current' field of the
