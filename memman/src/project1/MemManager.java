@@ -1,9 +1,18 @@
 import java.util.HashMap;
 
 
+// -------------------------------------------------------------------------
+/**
+ *  This class will be represent our memory manager, handling any memory tasks
+ *  and freeBlockList modifications.
+ *
+ *  @author Xavier Seymour xaviers3
+ *  @version Sept 5, 2011
+ */
 public class MemManager
 {
 
+    //The memory pool in which we will store our data
     private byte[]                                      memoryPool;
 
     // The linkedList will consist of HashMaps which will store free space
@@ -23,6 +32,12 @@ public class MemManager
 
 
     // constructor
+    // ----------------------------------------------------------
+    /**
+     * Creates a new MemManager object.
+     * @param poolSize The size of the memory pool we will work on in number of
+     * bytes.
+     */
     public MemManager( int poolSize )
     {
 
@@ -40,8 +55,13 @@ public class MemManager
     }
 
 
-    // Insert a record and return its position handle.
-    // space contains the record to be inserted, of length size.
+    /**
+     * Insert a record into the memory pool and return its position handle.
+     * @param space The record to be inserted
+     * @param size The size of the record in bytes that is being inserted
+     * @return position The position handle of the record. The first byte position the
+     * record was placed
+     */
     public int insert( byte[] space, int size )
     {
         caller = "insert";
@@ -65,14 +85,15 @@ public class MemManager
     }
 
 
-    /*
-     * // Free a block at posHandle. Merge adjacent blocks if appropriate. void
-     * remove(Handle theHandle); // Return the record with handle posHandle, up
-     * to size bytes. // Place the record into space. void get(byte[] space,
-     * Handle theHandle, int size);
+
+
+    /**
+     * Find smallest memory location that the record can fit in. Return the byte
+     *  position
+     * @param size The size of the record in question
+     * @return position The starting byte position within the memory pool which will
+     * house the record
      */
-    // Find smallest memory location that the record can fit in. Return the byte
-    // position
     public int findMemory( int size )
     {
         // represents the smallest available freeBlock within out freeBlock list
@@ -101,6 +122,12 @@ public class MemManager
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Update the freeBlockList after modifying the memory pool
+     * @param position The record inserted or removed bte position
+     * @param size The size of the record
+     */
     public void updateFreeBlockList( int position, int size )
     {
         int key = findBlock( position );
@@ -126,6 +153,12 @@ public class MemManager
 
     // Free a block at the position specified by the Handle.
     // Merge adjacent free blocks.
+    // ----------------------------------------------------------
+    /**
+     * Free a block at the position specified by the Handle.
+     *  Merge adjacent free blocks.
+     * @param position The position of the record to be removed
+     */
     public void remove( int position )
     {
         caller = "remove";
@@ -201,10 +234,6 @@ public class MemManager
     }
 
 
-    // Finds the freeBlock whose and sets the 'current' field of the
-    // freeBlockList to point to the
-    //
-    // ----------------------------------------------------------
     /**
      * If the caller of this method is insert, finds the freeBlock whose key
      * matches the position in question and sets the 'current' field of the
@@ -250,13 +279,6 @@ public class MemManager
 
         return key;
     }
-
-
-    public void merge()
-    {
-
-    }
-
 
     // ----------------------------------------------------------
     /**
